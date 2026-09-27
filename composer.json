@@ -1,0 +1,66 @@
+{
+    "name": "qoliber/trident-cache-woocommerce",
+    "description": "WooCommerce plugin for the Trident HTTP cache: WordPress/WooCommerce adapters over qoliber/trident-php.",
+    "type": "wordpress-plugin",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "qoliber/trident-php": "*@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "wp-coding-standards/wpcs": "^3.1",
+        "brianhenryie/strauss": "^0.30"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Qoliber\\TridentWoo\\": "includes/",
+            "Qoliber\\TridentWoo\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.0"
+        },
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "lint": "phpcs",
+        "build": "bin/build-zip.sh"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../../php-library",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "strauss": {
+            "target_directory": "vendor-prefixed",
+            "namespace_prefix": "Qoliber\\TridentWoo\\Vendor\\",
+            "classmap_prefix": "Qoliber_TridentWoo_",
+            "constant_prefix": "TRIDENT_WOO_",
+            "packages": [
+                "qoliber/trident-php"
+            ],
+            "update_call_sites": false,
+            "delete_vendor_packages": false,
+            "delete_vendor_files": false,
+            "exclude_from_copy": {
+                "file_patterns": [
+                    "~qoliber/trident-php/(vendor|tests|docker|\\.phpunit\\.cache)/~",
+                    "~qoliber/trident-php/(phpunit\\.xml|composer\\.lock)$~"
+                ]
+            }
+        }
+    }
+}
