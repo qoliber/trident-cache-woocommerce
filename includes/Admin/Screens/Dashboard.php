@@ -11,6 +11,7 @@ namespace Qoliber\TridentWoo\Admin\Screens;
 
 use Qoliber\Trident\Admin\Fleet;
 use Qoliber\Trident\Client\TridentClient;
+use Qoliber\Trident\Compatibility;
 use Qoliber\TridentWoo\Admin\Operator;
 use Qoliber\TridentWoo\Plugin;
 
@@ -69,6 +70,14 @@ final class Dashboard extends Screen {
 			printf( '<div class="notice notice-warning inline"><p>%s <a href="%s">%s</a></p></div>', esc_html__( 'No Trident instance is configured.', 'trident-cache-woocommerce' ), esc_url( Operator::url( 'settings' ) ), esc_html__( 'Settings', 'trident-cache-woocommerce' ) );
 		}
 		Operator::problems( $results, __( 'this', 'trident-cache-woocommerce' ) );
+		// Lockstep versioning: say so when an instance runs another Trident
+		// release line than this plugin is built for.
+		foreach ( $results as $result ) {
+			$warning = $result->isOk() ? Compatibility::warning( $result->value['status']->string( 'version' ) ) : null;
+			if ( null !== $warning ) {
+				printf( '<div class="notice notice-warning inline trident-compat"><p><strong>%s</strong> %s</p></div>', esc_html( $result->name() . ':' ), esc_html( $warning ) );
+			}
+		}
 
 		echo '<h2>' . esc_html__( 'Instances', 'trident-cache-woocommerce' ) . '</h2>';
 		echo Operator::table( array( __( 'Instance', 'trident-cache-woocommerce' ), __( 'Status', 'trident-cache-woocommerce' ), __( 'Hit rate', 'trident-cache-woocommerce' ), __( 'Hits / misses / passes', 'trident-cache-woocommerce' ), __( 'Entries', 'trident-cache-woocommerce' ), __( 'Cache memory', 'trident-cache-woocommerce' ), __( 'Process RSS', 'trident-cache-woocommerce' ), __( 'Latency p50 / p95 / p99', 'trident-cache-woocommerce' ), __( 'Backends', 'trident-cache-woocommerce' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- table() escapes.

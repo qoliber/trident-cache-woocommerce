@@ -6,7 +6,7 @@ Tested up to: 7.1
 Requires PHP: 8.1
 WC requires at least: 9.0
 WC tested up to: 11.1
-Stable tag: 1.0.0-beta.1
+Stable tag: 1.8.0-beta.1
 License: MIT
 
 Full-page caching for WooCommerce behind the Trident HTTP cache: cache tags, safe cacheability, durable purges, private content from a local cache, optional ESI for shared blocks.
@@ -25,7 +25,9 @@ See README.md for the design, the Trident configuration and the WP-CLI commands.
 
 == Changelog ==
 
-= Unreleased =
+= 1.8.0-beta.1 =
+* Versioning follows Trident (lockstep): 1.8.x of this plugin works with Trident 1.8. This is the first release on that scheme, still marked beta until the plugin has run on a production shop.
+* The dashboard warns when a connected Trident runs another release line than the plugin is built for.
 * The Denoisers screen's WAF-export view (this shop's dead zones and noise parameters) now comes from the shared library (qoliber/trident-php Admin\WafView, 1.6.0); the plugin's own copy is gone.
 * On qoliber/trident-php 1.5.0: tag and product purges report how many cache entries Trident removed; "Clear the entire cache" reports entries removed and bytes freed (the clear schema, not a purge count); the Denoisers screen can forget one learned path zone or query scope (with a confirmation) and shows the trident-waf-v1 export as tables, filtered to this shop's host; pin, unpin and forget say what the engine confirmed; a purge or clear Trident did not acknowledge is reported as a failure, not a success.
 * A top-level "Trident Cache" admin menu with the Magento module's screens: dashboard (per-instance hit rate, memory, entries, health, and the purge queue), purge (pages, products, tags, pattern with preview, host, site, whole cache, plus "Purge this page" in the admin bar), cached pages with entry detail, tags, coverage, warmer, launch mode, reflect mode, denoisers, bans, backends, DNS discovery and live events, and a WordPress dashboard widget. Built on the shared qoliber/trident-php admin client. Each screen shows every instance separately; an unreachable one is reported, never fatal. Behind manage_options (filter trident_admin_capability); every action is POST with a nonce, and destructive ones need a confirmation. The settings moved to Trident Cache → Settings; the old address redirects.

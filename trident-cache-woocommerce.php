@@ -3,7 +3,7 @@
  * Plugin Name:          Trident Cache for WooCommerce
  * Plugin URI:           https://github.com/Trident-Cache/trident-cache/tree/main/integrations/ecommerce/woocommerce
  * Description:          Full-page caching for WooCommerce behind the Trident HTTP cache: cache tags, safe cacheability, durable purges, private content from a local cache, optional ESI for shared blocks.
- * Version:              1.0.0-beta.1
+ * Version:              1.8.0-beta.1
  * Author:               qoliber
  * Author URI:           https://qoliber.com
  * License:              MIT
@@ -22,7 +22,7 @@ declare( strict_types=1 );
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TRIDENT_WOO_VERSION', '1.0.0-beta.1' );
+define( 'TRIDENT_WOO_VERSION', '1.8.0-beta.1' );
 define( 'TRIDENT_WOO_FILE', __FILE__ );
 define( 'TRIDENT_WOO_DIR', __DIR__ );
 

@@ -462,6 +462,13 @@ Do not run this plugin together with the generic WordPress plugin in
 `integrations/frameworks/wordpress` or `integrations/cms/wordpress/plugin*` —
 both would send cache headers.
 
+## Versioning
+
+Versions follow Trident: this plugin 1.8.x works with Trident 1.8. MAJOR.MINOR moves
+with the engine (every Trident X.Y.0 release is also a release of this package,
+changed or not); the PATCH number is this package's own. The 1.8 line is published as `1.8.0-beta.1` until the plugin has run on a production shop. The
+admin screens warn when a connected Trident runs another release line.
+
 ## This repository is a mirror
 
 `qoliber/trident-cache-woocommerce` is developed in the Trident repository together with the
