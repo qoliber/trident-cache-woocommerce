@@ -99,17 +99,15 @@ final class Plugin {
 
 	/**
 	 * URL of an asset shipped by qoliber/trident-php (`assets/…` in the library).
-	 * The release zip carries a copy under `assets/lib/`; a development checkout
-	 * serves it from Composer's `vendor/`.
+	 * The plugin carries its own copy under `assets/lib/`, kept byte-equal to
+	 * the library's by LibraryAssetsTest: installed with the site's Composer,
+	 * the library sits in a `vendor/` that is usually outside the web root.
 	 *
 	 * @param string $path Path below the library's `assets/`, e.g. `js/trident-sections.js`.
 	 * @return string
 	 */
 	public static function library_asset_url( string $path ): string {
-		if ( is_file( TRIDENT_WOO_DIR . '/assets/lib/' . $path ) ) {
-			return plugins_url( 'assets/lib/' . $path, TRIDENT_WOO_FILE );
-		}
-		return plugins_url( 'vendor/qoliber/trident-php/assets/' . $path, TRIDENT_WOO_FILE );
+		return plugins_url( 'assets/lib/' . $path, TRIDENT_WOO_FILE );
 	}
 
 	/**

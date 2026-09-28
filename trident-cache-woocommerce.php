@@ -30,16 +30,18 @@ define( 'TRIDENT_WOO_DIR', __DIR__ );
 // tag and cache-policy code). The release zip bundles it PREFIXED under
 // vendor-prefixed/ (Strauss, see bin/build-zip.sh), so two plugins bundling
 // different versions of the library — or of its PSR interfaces — cannot load
-// each other's classes. A development checkout uses Composer's vendor/.
+// each other's classes. A development checkout uses Composer's vendor/. A site
+// that installs the plugin with Composer (Bedrock and the like) has the library
+// in its own vendor/, and its autoloader is loaded before WordPress.
 if ( is_file( TRIDENT_WOO_DIR . '/vendor-prefixed/autoload.php' ) ) {
 	require_once TRIDENT_WOO_DIR . '/vendor-prefixed/autoload.php';
 } elseif ( is_file( TRIDENT_WOO_DIR . '/vendor/autoload.php' ) ) {
 	require_once TRIDENT_WOO_DIR . '/vendor/autoload.php';
-} else {
+} elseif ( ! class_exists( \Qoliber\Trident\Delivery\Purger::class ) ) {
 	add_action(
 		'admin_notices',
 		static function (): void {
-			echo '<div class="notice notice-error"><p>Trident Cache for WooCommerce: dependencies are missing. Install the release zip, or run <code>composer install</code> in the plugin directory.</p></div>';
+			echo '<div class="notice notice-error"><p>Trident Cache for WooCommerce: dependencies are missing. Install the release zip, require <code>qoliber/trident-cache-woocommerce</code> with the site\'s Composer, or run <code>composer install</code> in the plugin directory.</p></div>';
 		}
 	);
 	return;

@@ -10,7 +10,7 @@ durably, so a purge Trident did not take is retried instead of lost.
 | Requires | WordPress 7.0+, WooCommerce 9.0+, PHP 8.1+ |
 | Tested | WordPress 7.1.2, WooCommerce 11.1.2, Storefront 4.6.2 and Twenty Twenty-Five 1.5, PHP 8.3 live (unit tests on 8.1–8.5), the Trident 1.8.0 candidate (the purge acknowledgement also accepts the 1.6/1.7 response schema) |
 | Evidence | `tests/woocommerce-e2e` — a live stack (nginx → Trident → nginx → PHP-FPM → MariaDB) and a fail-closed case suite |
-| Dependencies | `qoliber/trident-php` 1.3+, bundled prefixed in the release zip (see [Library boundary](#library-boundary-and-the-release-zip)) |
+| Dependencies | `qoliber/trident-php` ^1.8: bundled prefixed in the release zip, or resolved by the site's Composer (see [Library boundary](#library-boundary-and-the-release-zip)) |
 
 ## What it does
 
@@ -47,7 +47,18 @@ durably, so a purge Trident did not take is retried instead of lost.
 
 ## Install
 
-1. Copy `trident-cache-woocommerce/` to `wp-content/plugins/` and activate it.
+1. Install the release zip (Plugins → Add New → Upload, or `wp plugin install
+   trident-cache-woocommerce-<version>.zip`) and activate it. On a site managed
+   with Composer (Bedrock and the like, `composer/installers` in the site's
+   `composer.json`), require it instead:
+
+   ```bash
+   composer require qoliber/trident-cache-woocommerce:^1.8@beta
+   wp plugin activate trident-cache-woocommerce
+   ```
+
+   `@beta` while the 1.8 line is published as `1.8.0-beta.1` (see
+   [Versioning](#versioning)).
 2. Configure Trident with [`../trident.toml`](../trident.toml) — or merge the
    output of `wp trident config`, which has this site's hosts and page paths.
 3. Point the plugin at Trident's admin API, either on Trident Cache → Settings
@@ -369,7 +380,7 @@ Sylius and PrestaShop reuse the same, separately tested code:
 | `Delivery\OutboxStore`, `Delivery\Transport` (interfaces) | implemented by `Purge\WpdbOutboxStore` (`$wpdb`) and `Purge\WpHttpTransport` (WordPress HTTP API) |
 | `Tags\TagSet` | the bounded tag set `Tags\TagCollector` fills |
 | `Cache\Policy` | configured with WooCommerce's lists by `Cache\WooPolicy` |
-| `assets/js/trident-sections.js` | the personal-sections loader; `assets/js/trident-woo-sections.js` is the WooCommerce binding |
+| `assets/js/trident-sections.js` | the personal-sections loader, served from the plugin's copy in `assets/lib/js/`; `assets/js/trident-woo-sections.js` is the WooCommerce binding |
 
 The plugin keeps what is WordPress/WooCommerce: which hooks purge which tags
 (`Purge\PurgeHooks`, `Tags\Names`), which objects on a page produce which tags
@@ -386,6 +397,20 @@ rewrites the plugin's references, checks that nothing unprefixed is left and
 that the prefixed classes load, and writes `dist/trident-cache-woocommerce-<version>.zip`.
 The e2e stack installs that zip (`wp plugin install`), not the source tree, so
 the tested artifact is the shipped one.
+
+**Required with the site's Composer, the library is not prefixed.** It goes to
+the site's `vendor/` like every other package, and the site's autoloader (loaded
+before WordPress) provides it: one Composer resolves one version of it and of the
+PSR interfaces for the whole site, which is what the prefixing protects the zip
+from. `tests/composer-install/run.sh` installs the plugin that way — a Bedrock
+layout, `composer/installers`, no `vendor/` in the plugin — and checks that it
+boots and that every class it ships loads (CI, `scripts/ci/php-integrations.sh`).
+
+**The browser script is the plugin's own copy.** A site's `vendor/` is usually
+outside the web root, so the plugin serves `assets/lib/js/trident-sections.js`,
+which `tests/Unit/LibraryAssetsTest.php` keeps byte-equal to the library's (and
+`bin/build-zip.sh` to the library the zip bundles). Changing the library's script
+means copying it here in the same change.
 
 In a development checkout the plugin loads Composer's `vendor/autoload.php`
 (the library via a path repository, `../../../php-library`).

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e09948300ca9a1e11ecbadc7c947131",
+    "content-hash": "9e04bea2ee47b7c9adb018f5f10aa30d",
     "packages": [
         {
             "name": "psr/http-client",
@@ -331,11 +331,11 @@
         },
         {
             "name": "qoliber/trident-php",
-            "version": "dev-main",
+            "version": "1.8.99",
             "dist": {
                 "type": "path",
                 "url": "../../../php-library",
-                "reference": "31d527af74b3258a57beeb771963a0248080a377"
+                "reference": "7138be33c63db3a8cc2940fe490c358878adf932"
             },
             "require": {
                 "php": "^8.1",
@@ -352,6 +352,10 @@
                 "phpunit/phpunit": "^10.0 || ^11.0",
                 "qoliber/servermock": "^1.0",
                 "squizlabs/php_codesniffer": "^3.7"
+            },
+            "suggest": {
+                "ext-sodium": "for Security\\TokenVault: the admin-stored API token sealed to its URL",
+                "guzzlehttp/guzzle": "^7.5 — for Http\\TransportFactory: libcurl, no redirects, the NetworkGuard pinned per request"
             },
             "type": "library",
             "autoload": {
@@ -6290,9 +6294,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "qoliber/trident-php": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

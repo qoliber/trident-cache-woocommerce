@@ -37,9 +37,10 @@ STAGE="$STAGE_ROOT/$SLUG"
 mkdir -p "$STAGE"
 cp -r "$SLUG.php" uninstall.php readme.txt README.md includes assets vendor-prefixed "$STAGE/"
 # The platform-neutral browser script ships with the library; the plugin serves
-# its copy from assets/lib/ (Plugin::library_asset_url()).
-mkdir -p "$STAGE/assets/lib"
-cp -r vendor/qoliber/trident-php/assets/js "$STAGE/assets/lib/"
+# its committed copy from assets/lib/ (Plugin::library_asset_url()), which must
+# be the library the zip bundles, byte for byte.
+diff -r vendor/qoliber/trident-php/assets/js assets/lib/js \
+  || { echo "assets/lib/js differs from the bundled qoliber/trident-php — copy the library's assets/js" >&2; exit 1; }
 
 echo "== rewriting call sites to the prefixed namespace"
 # `Qoliber\Trident\` (the library) — never `Qoliber\TridentWoo\` (the plugin).
