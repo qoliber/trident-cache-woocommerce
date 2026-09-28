@@ -67,7 +67,10 @@ final class Warmer extends Screen {
 			echo Operator::details( $result->value->all() );
 		}
 		echo '<h2>' . esc_html__( 'Actions', 'trident-cache-woocommerce' ) . '</h2>';
-		echo $this->op->form( 'warmer', 'run', 'display:inline-block;margin-right:1em' ) . $select . '<button class="button button-primary">' . esc_html__( 'Run the configured sources now', 'trident-cache-woocommerce' ) . '</button></form>';
+		echo $this->op->form( 'warmer', 'run' );
+		printf( '<p><textarea name="sitemaps" rows="3" cols="80" class="large-text code" placeholder="%s"></textarea></p>', esc_attr( '/wp-sitemap.xml' ) );
+		printf( '<p class="description">%s</p>', esc_html__( 'Optional: sitemap URL(s) on this site, one per line (.xml or .xml.gz; an index expands). Empty: the warmer\'s configured sources.', 'trident-cache-woocommerce' ) );
+		echo '<p>' . $select . '<button class="button button-primary">' . esc_html__( 'Run the warmer now', 'trident-cache-woocommerce' ) . '</button></p></form>';
 		echo $this->op->form( 'warmer', 'cancel', 'display:inline-block;margin-right:1em' ) . $select . '<button class="button">' . esc_html__( 'Cancel the current run', 'trident-cache-woocommerce' ) . '</button></form>';
 		echo $this->op->form( 'warmer', 'catalogue', 'display:inline-block' ) . $select . '<button class="button">' . esc_html__( 'Warm this shop\'s pages', 'trident-cache-woocommerce' ) . '</button></form>';
 		// phpcs:enable
@@ -83,7 +86,23 @@ final class Warmer extends Screen {
 		$targets = Operator::targets( $post );
 		switch ( $op ) {
 			case 'run':
-				Operator::report( __( 'Warmer run', 'trident-cache-woocommerce' ), $fleet->on( $targets, static fn ( TridentClient $c ): Payload => $c->warmerRun() ), static fn ( Payload $p ): string => sprintf( '%s, %d URL(s) queued', $p->string( 'status', 'started' ), $p->int( 'queued' ) ) );
+				// Only this site's sitemaps: on a shared Trident a shop may not warm
+				// another's. A path is taken as this site's.
+				$sitemaps = array();
+				$lines    = preg_split( '/\R/', (string) ( $post['sitemaps'] ?? '' ) );
+				foreach ( false === $lines ? array() : $lines as $line ) {
+					$line = trim( $line );
+					if ( '' === $line ) {
+						continue;
+					}
+					$own = Purge::own_url( $line );
+					if ( null === $own ) {
+						Operator::notice( 'error', sprintf( 'Not a sitemap of this site: %s', $line ) );
+						return;
+					}
+					$sitemaps[] = $own->absolute();
+				}
+				Operator::report( __( 'Warmer run', 'trident-cache-woocommerce' ), $fleet->on( $targets, static fn ( TridentClient $c ): Payload => $c->warmerRun( $sitemaps ) ), static fn ( Payload $p ): string => sprintf( '%s, %d URL(s) queued (%s)', $p->string( 'status', 'started' ), $p->int( 'queued' ), $p->string( 'source', 'config' ) ) );
 				return;
 			case 'cancel':
 				Operator::report( __( 'Warmer cancel', 'trident-cache-woocommerce' ), $fleet->on( $targets, static fn ( TridentClient $c ): Payload => $c->warmerCancel() ), static fn ( Payload $p ): string => $p->string( 'status', 'cancelled' ) );
