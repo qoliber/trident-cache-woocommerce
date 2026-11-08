@@ -10,7 +10,7 @@ durably, so a purge Trident did not take is retried instead of lost.
 | Requires | WordPress 7.0+, WooCommerce 9.0+, PHP 8.1+ |
 | Tested | WordPress 7.1.2, WooCommerce 11.1.2, Storefront 4.6.2 and Twenty Twenty-Five 1.5, PHP 8.3 live (unit tests on 8.1–8.5), the Trident 1.8.0 candidate (the purge acknowledgement also accepts the 1.6/1.7 response schema) |
 | Evidence | `tests/woocommerce-e2e` — a live stack (nginx → Trident → nginx → PHP-FPM → MariaDB) and a fail-closed case suite |
-| Dependencies | `qoliber/trident-php` ^1.8: bundled prefixed in the release zip, or resolved by the site's Composer (see [Library boundary](#library-boundary-and-the-release-zip)) |
+| Dependencies | `qoliber/trident-php` ~1.8.2: bundled prefixed in the release zip, or resolved by the site's Composer after the corrected SDK candidate is published (see [Library boundary](#library-boundary-and-the-release-zip)) |
 
 ## What it does
 
