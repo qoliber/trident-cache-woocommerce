@@ -85,6 +85,13 @@ define( 'DISABLE_WP_CRON', true );
 
 5. `wp trident check` — every instance reachable, token accepted, licensed.
 
+Every Trident restart starts with an empty cache (an upgrade, a rollback, a
+crash or a plain restart: Trident 1.8 exports its cache but does not restore
+it). Restart one Trident node at a time and size the origin for one cold
+node's share of the traffic, or refill the busiest pages with the warmer
+before the node takes traffic. Purges are per node: list every Trident
+instance in `TRIDENT_INSTANCES`, so each node receives every purge.
+
 ### The Trident settings that matter
 
 | setting | why |
