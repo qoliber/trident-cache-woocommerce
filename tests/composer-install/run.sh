@@ -45,7 +45,7 @@ cat > "$SITE/composer.json" <<'JSON'
 }
 JSON
 
-docker run --rm -u "$U" -e COMPOSER_HOME=/tmp/composer -v "$SITE:/site" -w /site composer:2 \
+docker run --rm -u "$U" -e COMPOSER_HOME=/tmp/composer -v "$SITE:/site" -w /site composer:2@sha256:0c8e663f14c94d07b3c45b175c51f5a14718508f21fe4dd7e54f09488dd0ed71 \
   install --no-dev --no-interaction --no-progress
 docker run --rm -u "$U" -v "$SITE:/site" -v "$PLUGIN/tests/composer-install/check.php:/check.php:ro" -w /site php:8.1-cli \
   php /check.php
